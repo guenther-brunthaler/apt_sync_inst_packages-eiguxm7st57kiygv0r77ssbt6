@@ -1,0 +1,14 @@
+dpkg --get-selections > sel0
+apt-mark showmanual > man0
+apt-mark showauto > aut0
+...
+LC_COLLATE=C sort -u aut* > autm
+LC_COLLATE=C sort -u man* > manm
+LC_COLLATE=C sort -u sel* > selm
+##cat /var/lib/apt/lists/*_Packages | dpkg --update-avail
+apt-cache dumpavail | dpkg --update-avail
+dpkg --clear-selections
+dpkg --set-selections < selm
+apt-get dselect-upgrade
+xargs apt-mark auto < autm
+xargs apt-mark manual < manm
